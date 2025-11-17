@@ -2,18 +2,26 @@ INCLUDE globals.inc
 
 PUBLIC startGame
 EXTERN drawBoard@0:PROC
+EXTERN getRandomPiece@0:PROC
 
 .data
-	currentPiece DWORD ?
-	nextPiece DWORD ?
+	currentPiece DWORD ?					; contains address of current piece
+	nextPiece DWORD ?						; contaisn address of next piece
+	currentRotation DWORD ?					; 0 - 3 indicating index of rotated current shape
+	nextRotation DWORD ?						; 0 - 3 indicating index of rotated next shape
 	currentPieceCoordinates DWORD 4 dup(?)
 .code
 startGame PROC		; contains the game loop. also initializes everything before the loop
 
+	call getRandomPiece@0
+	mov currentPiece, esi
+	mov currentRotation, edi
+
+	call getRandomPiece@0
+	mov nextPiece, esi
+	mov nextRotation, edi
+
 gameloop:
-	mov dl, 0
-	mov dh, 0
-	call Gotoxy
 
 	call drawBoard@0
 

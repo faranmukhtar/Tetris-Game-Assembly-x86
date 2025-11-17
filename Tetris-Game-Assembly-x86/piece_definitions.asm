@@ -45,6 +45,7 @@ INCLUDE globals.inc
 ;	0 0 0 0 0	0 0 0 0 0
 
 PUBLIC pieceArray
+PUBLIC getRandomPiece
 
 .data
     pieceArray  BYTE 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,0,0,0
@@ -82,6 +83,9 @@ PUBLIC pieceArray
             BYTE 0,0,0,0,0, 0,7,7,0,0, 0,0,7,7,0, 0,0,0,0,0, 0,0,0,0,0
             BYTE 0,0,0,0,0, 0,0,7,0,0, 0,7,7,0,0, 0,7,0,0,0, 0,0,0,0,0
 .code
-getRandomPiece PROC         ; stores index of random piece in esi
+getRandomPiece PROC         ; stores index of random piece in esi and rotation index in edi
+    mov esi, OFFSET pieceArray  ;temporary
+    mov edi, 0
+    ret
 getRandomPiece ENDP
 END
