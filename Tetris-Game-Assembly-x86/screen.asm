@@ -11,7 +11,7 @@ endRow BYTE '\>', 0
 temp DWORD ?
 
 .code
-drawBoard PROC
+drawBoard PROC uses edx ecx eax esi
 	mov dl, 0
 	mov dh, 0
 	call Gotoxy

@@ -17,6 +17,7 @@ SPAWN_Y          EQU 0        ; top row
 IFNDEF BOARD_STATE_ASM
     EXTERN boardArray:BYTE     ; Declared in board_state.asm
     EXTERN initializeBoard@0:PROC
+    EXTERN setBoardCoordinates@0:PROC
 ENDIF
 
 IFNDEF PIECE_DEFINITIONS_ASM

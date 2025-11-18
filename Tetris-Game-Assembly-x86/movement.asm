@@ -10,10 +10,12 @@ PUBLIC checkCollision
 
 .data
 .code
-movePieceHorizontal PROC			; moves the current piece based on provided input
+; moves the current piece based on provided input
+movePieceHorizontal PROC			
 movePieceHorizontal ENDP
 
-movePieceDown PROC					; takes array coordinates in esi and shifts down
+; takes array coordinates in esi and shifts down
+movePieceDown PROC uses ecx eax
 	mov ecx, TOTAL_COORDINATES
 shiftLoop:
 	mov eax, [esi]

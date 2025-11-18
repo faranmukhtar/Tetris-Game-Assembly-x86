@@ -46,27 +46,15 @@ startGame ENDP
 
 ; updates the game after each loop
 updateGame PROC
-	mov ecx, TOTAL_COORDINATES
-	mov esi, 0
-	mov edi, OFFSET currentPieceCoordinates
-addLoop:
-	mov eax, [edi]
-	mov boardArray[eax], 1
-	add edi, 4
-	loop addLoop
+	mov esi, OFFSET currentPieceCoordinates
+	mov al, 1
+	call setBoardCoordinates@0
 
 	call drawBoard@0
 
-	mov ecx, TOTAL_COORDINATES
-	mov esi, 0
-	mov edi, OFFSET currentPieceCoordinates
-removeLoop:
-	mov eax, [edi]
-	mov boardArray[eax], 0
-	mov eax, [edi]
-	call Crlf
-	add edi, 4
-	loop removeLoop
+	mov esi, OFFSET currentPieceCoordinates
+	mov al, 0
+	call setBoardCoordinates@0
 
 	mov esi, OFFSET currentPieceCoordinates
 	call movePieceDown@0
