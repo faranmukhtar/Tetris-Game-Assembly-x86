@@ -42,7 +42,7 @@
     <MASM Include="movement.asm">
       <Filter>Source Files\game\pieces</Filter>
     </MASM>
-    <MASM Include="array_to_coordinates.asm">
+    <MASM Include="map_array.asm">
       <Filter>Source Files\game\pieces</Filter>
     </MASM>
     <MASM Include="score.asm">

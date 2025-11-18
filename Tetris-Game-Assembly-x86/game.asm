@@ -1,17 +1,18 @@
+GAME_ASM EQU 1
 INCLUDE globals.inc
 
 PUBLIC startGame
-EXTERN drawBoard@0:PROC
-EXTERN getRandomPiece@0:PROC
 
 .data
-	currentPiece DWORD ?					; contains address of current piece
-	nextPiece DWORD ?						; contaisn address of next piece
-	currentRotation DWORD ?					; 0 - 3 indicating index of rotated current shape
-	nextRotation DWORD ?						; 0 - 3 indicating index of rotated next shape
-	currentPieceCoordinates DWORD 4 dup(?)
+	currentPiece DWORD ?									; contains index of current piece
+	nextPiece DWORD ?										; contaisn index of next piece
+	currentRotation DWORD ?									; 0 - 3 indicating index of rotated current shape
+	nextRotation DWORD ?									; 0 - 3 indicating index of rotated next shape
+	currentPieceCoordinates DWORD TOTAL_COORDINATES dup(?)
 .code
-startGame PROC		; contains the game loop. also initializes everything before the loop
+
+; contains the game loop. also initializes everything before the loop
+startGame PROC
 
 	call getRandomPiece@0
 	mov currentPiece, esi
@@ -21,9 +22,21 @@ startGame PROC		; contains the game loop. also initializes everything before the
 	mov nextPiece, esi
 	mov nextRotation, edi
 
-gameloop:
+	mov esi, currentPiece
+	mov eax, PIECE_SIZE
+	mov ebx, currentRotation
+	mul ebx
+	add esi, eax
 
-	call drawBoard@0
+	mov edi, OFFSET currentPieceCoordinates
+
+	push SPAWN_X
+	push SPAWN_Y
+	call mapArray@0
+
+gameloop:
+	
+	call updateGame
 
 	mov eax, 100
 	call Delay
@@ -31,12 +44,36 @@ gameloop:
 
 startGame ENDP
 
-updateGame PROC		; updates the game after each loop
+; updates the game after each loop
+updateGame PROC
+	mov ecx, TOTAL_COORDINATES
+	mov esi, 0
+	mov edi, OFFSET currentPieceCoordinates
+addLoop:
+	mov eax, [edi]
+	mov boardArray[eax], 1
+	add edi, 4
+	loop addLoop
+
+	call drawBoard@0
+
+	mov ecx, TOTAL_COORDINATES
+	mov esi, 0
+	mov edi, OFFSET currentPieceCoordinates
+removeLoop:
+	mov eax, [edi]
+	mov boardArray[eax], 0
+	mov eax, [edi]
+	call Crlf
+	add edi, 4
+	loop removeLoop
+
+	mov esi, OFFSET currentPieceCoordinates
+	call movePieceDown@0
+	ret
 updateGame ENDP
 
-endGame PROC		; Game over loop. Takes input to restart the game
+; Game over loop. Takes input to restart the game
+endGame PROC
 endGame ENDP
-
-checkGameOver PROC
-checkGameOver ENDP
 END

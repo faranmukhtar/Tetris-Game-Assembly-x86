@@ -1,6 +1,9 @@
 PIECE_DEFINITIONS_ASM EQU 1
 INCLUDE globals.inc
 
+PUBLIC pieceArray
+PUBLIC getRandomPiece
+
 ;Pieces are defined in such order(Might change later):
 ;	0 0 1 0 0	0 0 0 0 0
 ;	0 0 1 0 0	0 0 0 0 0
@@ -83,8 +86,11 @@ PUBLIC getRandomPiece
             BYTE 0,0,0,0,0, 0,7,7,0,0, 0,0,7,7,0, 0,0,0,0,0, 0,0,0,0,0
             BYTE 0,0,0,0,0, 0,0,7,0,0, 0,7,7,0,0, 0,7,0,0,0, 0,0,0,0,0
 .code
-getRandomPiece PROC         ; stores index of random piece in esi and rotation index in edi
-    mov esi, OFFSET pieceArray  ;temporary
+
+; stores index of random piece in esi and rotation index in edi
+; NOTE: esi MUST be a multiple of 100 and edi MUST be in range 0-3
+getRandomPiece PROC
+    mov esi, 0  ;temporary
     mov edi, 0
     ret
 getRandomPiece ENDP

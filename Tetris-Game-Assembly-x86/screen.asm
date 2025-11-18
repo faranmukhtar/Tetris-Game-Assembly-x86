@@ -1,6 +1,9 @@
+SCREEN_ASM EQU 1
 INCLUDE globals.inc
 
 PUBLIC drawBoard
+PUBLIC drawNextPiece
+
 .data
 line BYTE 25 dup('-'), 0
 startRow BYTE '</ ', 0
@@ -47,8 +50,6 @@ drawBoard ENDP
 
 ; takes next shape as parameter and displays it in a box.
 ; change cursor to achieve this
-; OR
-; merge drawBoard with this function
 drawNextPiece PROC 
 drawNextPiece ENDP
 END

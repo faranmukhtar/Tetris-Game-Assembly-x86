@@ -131,7 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <MASM Include="array_to_coordinates.asm" />
+    <MASM Include="map_array.asm" />
     <MASM Include="board_state.asm">
       <IncludePaths Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\irvine</IncludePaths>
     </MASM>

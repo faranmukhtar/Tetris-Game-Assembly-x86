@@ -1,4 +1,7 @@
+INPUT_ASM EQU 1
 INCLUDE globals.inc
+
+PUBLIC takeInput
 
 .data
 .code

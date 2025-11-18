@@ -1,7 +1,11 @@
+SCORE_ASM EQU 1
 INCLUDE globals.inc
 
+PUBLIC score
+public updateScore
+
 .data
-	;will have score variable
+	score DWORD 0
 .code
 updateScore PROC
 updateScore ENDP

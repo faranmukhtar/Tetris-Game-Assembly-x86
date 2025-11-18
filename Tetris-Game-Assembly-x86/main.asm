@@ -1,6 +1,4 @@
-INCLUDE Irvine32.inc
-
-EXTERN startGame@0:PROC
+INCLUDE globals.inc
 
 .data
 	
