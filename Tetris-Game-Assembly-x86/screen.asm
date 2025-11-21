@@ -1,3 +1,4 @@
+
 SCREEN_ASM EQU 1
 INCLUDE globals.inc
 
@@ -50,6 +51,33 @@ drawBoard ENDP
 
 ; takes next shape as parameter and displays it in a box.
 ; change cursor to achieve this
-drawNextPiece PROC 
+
+
+;esi has next piece
+;eax has next rotation
+drawNextPiece PROC uses ecx edx ebx 
+	mov ecx , 25
+	mul ecx
+	add [esi] , eax
+
+    mov ecx, 4          ; 4 blocks in piece
+
+drawLoop:
+    mov al, [esi]       ; get the value next piece
+    add esi, 1
+
+    cmp al, 0
+    je skipBlock        ; skip empty blocks
+
+    mov dh, 2           ; Y offset
+    mov dl, 40          ; X offset
+    call Gotoxy
+
+    mov al, '1'       
+    call WriteChar
+
+skipBlock:
+    loop drawLoop
+    ret
 drawNextPiece ENDP
 END

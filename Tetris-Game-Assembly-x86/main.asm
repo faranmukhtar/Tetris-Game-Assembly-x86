@@ -5,7 +5,8 @@ INCLUDE globals.inc
 .code
 main PROC
 	; temporary calling. startGame will be called here
+	
 	call startGame@0
 	exit
-main ENDP
+main ENDP		
 END main

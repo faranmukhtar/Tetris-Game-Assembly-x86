@@ -51,13 +51,20 @@ updateGame PROC
 	call setBoardCoordinates@0
 
 	call drawBoard@0
+	mov eax , nextRotation
+	mov esi , OFFSET nextPiece
+	call drawNextPiece@0
 
 	mov esi, OFFSET currentPieceCoordinates
 	mov al, 0
 	call setBoardCoordinates@0
 
 	mov esi, OFFSET currentPieceCoordinates
+	call movePieceHorizontal@0
+
 	call movePieceDown@0
+	mov esi, OFFSET currentPieceCoordinates
+	call placePiece@0
 	ret
 updateGame ENDP
 
