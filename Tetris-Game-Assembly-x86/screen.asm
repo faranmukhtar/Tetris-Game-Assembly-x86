@@ -31,7 +31,14 @@ drawBoard PROC uses edx ecx eax esi
 
 		colLoop:
 			movzx eax, BYTE PTR boardArray[esi]
+			cmp eax, 1
+			jne print_0
 			call WriteDec
+			jmp end_condition
+		print_0:
+			mov al, ' '
+			call WriteChar
+		end_condition:
 			mov al, ' '
 			call WriteChar
 			inc esi

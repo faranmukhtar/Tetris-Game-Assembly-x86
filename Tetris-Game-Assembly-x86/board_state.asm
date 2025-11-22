@@ -18,16 +18,7 @@ setLoop:
 	mov boardArray[ebx], al
 	add esi, 4
 loop setLoop
-	
-
-	mov ecx , 5
-	mov ebx,143
-dummyloop:
-	mov boardArray[ebx] , 1
-	add ebx , 1
-loop dummyloop
-ret
-
+	ret
 setBoardCoordinates ENDP
 
 initializeBoard PROC uses ecx esi

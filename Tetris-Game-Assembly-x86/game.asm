@@ -33,12 +33,13 @@ startGame PROC
 	push SPAWN_X
 	push SPAWN_Y
 	call mapArray@0
+	add esp, 8
 
 gameloop:
 	
 	call updateGame
 
-	mov eax, 100
+	mov eax, 150
 	call Delay
 	jmp gameloop
 
@@ -51,9 +52,6 @@ updateGame PROC
 	call setBoardCoordinates@0
 
 	call drawBoard@0
-	mov eax , nextRotation
-	mov esi , OFFSET nextPiece
-	call drawNextPiece@0
 
 	mov esi, OFFSET currentPieceCoordinates
 	mov al, 0
@@ -62,9 +60,18 @@ updateGame PROC
 	mov esi, OFFSET currentPieceCoordinates
 	call movePieceHorizontal@0
 
-	call movePieceDown@0
 	mov esi, OFFSET currentPieceCoordinates
-	call placePiece@0
+	mov eax, OFFSET currentPiece
+	push eax
+	mov eax, OFFSET nextPiece
+	push eax
+	mov eax, OFFSET currentRotation
+	push eax
+	mov eax, OFFSET nextRotation
+	push eax
+	call movePieceDown@0
+
+	add esp, 16
 	ret
 updateGame ENDP
 
