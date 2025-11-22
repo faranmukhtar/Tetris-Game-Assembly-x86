@@ -47,9 +47,6 @@ PUBLIC getRandomPiece
 ;	0 0 0 0 0	0 7 0 0 0
 ;	0 0 0 0 0	0 0 0 0 0
 
-PUBLIC pieceArray
-PUBLIC getRandomPiece
-
 .data
     pieceArray  BYTE 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,1,0,0, 0,0,0,0,0
             BYTE 0,0,0,0,0, 0,0,0,0,0, 1,1,1,1,0, 0,0,0,0,0, 0,0,0,0,0
@@ -89,9 +86,22 @@ PUBLIC getRandomPiece
 
 ; stores index of random piece in esi and rotation index in edi
 ; NOTE: esi MUST be a multiple of 100 and edi MUST be in range 0-3
-getRandomPiece PROC
-    mov esi, 0  ;temporary
-    mov edi, 0
+getRandomPiece PROC uses eax ebx edx
+    call GetMseconds            
+    call Randomize               
+    mov eax, 7                    
+    call RandomRange             
+    
+    ;multiply by 100 to convert from index to piece array offset
+    mov ebx, PIECE_ROTATIONS_SIZE
+    mul ebx                       
+    mov esi, eax                
+    
+    ;random rotation index
+    mov eax, 4                   
+    call RandomRange             
+    mov edi, eax               
+    
     ret
 getRandomPiece ENDP
 END
