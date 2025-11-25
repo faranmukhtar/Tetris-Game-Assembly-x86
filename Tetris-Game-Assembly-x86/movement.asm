@@ -274,7 +274,10 @@ shiftLoop:
     
     ; Check if coordinate is out of bounds (bottom of board)
     cmp ebx, BOARD_SIZE
-    jge Collision                   
+    jge Collision   
+	
+	cmp ebx, 0
+	jl skip
     
     ; Check if the position below is already occupied
     mov edi, OFFSET boardArray
@@ -282,6 +285,7 @@ shiftLoop:
     cmp eax, 0
     jne Collision                 
     
+skip:
     add edx, 4                     
 loop shiftLoop
     

@@ -95,6 +95,8 @@ updateGame PROC
 	push eax
 	call movePieceDown@0
 
+	call clearFullLines@0
+
 	add esp, 16
 	ret
 updateGame ENDP
