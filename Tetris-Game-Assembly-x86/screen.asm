@@ -4,12 +4,30 @@ INCLUDE globals.inc
 
 PUBLIC drawBoard
 PUBLIC drawNextPiece
+PUBLIC drawGameOver
 
 .data
 line BYTE 25 dup('-'), 0
 startRow BYTE '</ ', 0
 endRow BYTE '\>', 0
 temp DWORD ?
+tetrisColors BYTE 0BBh, 0EEh, 0DDh, 0AAh, 0CCh, 099h, 066h
+
+gameOverText BYTE "  /$$$$$$                                           /$$$$$$                               ", 0Dh,0Ah
+			 BYTE " /$$__  $$                                         /$$__  $$                              ", 0Dh,0Ah
+			 BYTE "| $$  \__/  /$$$$$$  /$$$$$$/$$$$   /$$$$$$       | $$  \ $$ /$$    /$$ /$$$$$$   /$$$$$$ ", 0Dh,0Ah
+			 BYTE "| $$ /$$$$ |____  $$| $$_  $$_  $$ /$$__  $$      | $$  | $$|  $$  /$$//$$__  $$ /$$__  $$", 0Dh,0Ah
+			 BYTE "| $$|_  $$  /$$$$$$$| $$ \ $$ \ $$| $$$$$$$$      | $$  | $$ \  $$/$$/| $$$$$$$$| $$  \__/", 0Dh,0Ah
+			 BYTE "| $$  \ $$ /$$__  $$| $$ | $$ | $$| $$_____/      | $$  | $$  \  $$$/ | $$_____/| $$      ", 0Dh,0Ah
+			 BYTE "|  $$$$$$/|  $$$$$$$| $$ | $$ | $$|  $$$$$$$      |  $$$$$$/   \  $/  |  $$$$$$$| $$      ", 0Dh,0Ah
+			 BYTE " \______/  \_______/|__/ |__/ |__/ \_______/       \______/     \_/    \_______/|__/      ", 0
+
+nextPieceLine BYTE 16 dup('-'), 0
+startPiece BYTE "|| ", 0
+endPiece BYTE " ||", 0
+                                                                                          
+                                                                                          
+                                                                                          
 
 .code
 drawBoard PROC uses edx ecx eax esi
@@ -30,9 +48,12 @@ drawBoard PROC uses edx ecx eax esi
 		mov ecx, BOARD_WIDTH
 
 		colLoop:
-			movzx eax, BYTE PTR boardArray[esi]
-			cmp eax, 1
-			jne print_0
+			movzx ebx, BYTE PTR boardArray[esi]
+			call getColor
+			call SetTextColor
+			cmp ebx, 0
+			je print_0
+			mov eax, ebx
 			call WriteDec
 			jmp end_condition
 		print_0:
@@ -44,6 +65,8 @@ drawBoard PROC uses edx ecx eax esi
 			inc esi
 			loop colLoop
 
+		mov eax, white + (black SHL 4)
+		call setTextColor
 		mov edx, OFFSET endRow
 		call WriteString
 		call Crlf
@@ -56,35 +79,90 @@ drawBoard PROC uses edx ecx eax esi
 	ret
 drawBoard ENDP
 
-; takes next shape as parameter and displays it in a box.
-; change cursor to achieve this
+getColor PROC uses ebx
+	dec ebx
+	cmp ebx, 0
+	jl not_in_range
+	cmp ebx, 6
+	jg not_in_range
+	movzx eax, tetrisColors[ebx]
+	jmp end_func
+not_in_range:
+	mov eax, white + (black SHL 4)
+end_func:
+	ret
+getColor ENDP
 
+;esi has next piece index
+drawNextPiece PROC uses ecx edx ebx eax esi edi
+	LOCAL x:BYTE, y:BYTE
+	mov dl, 30
+	mov dh, 8
+	mov x, dl
+	mov y, dh
+	call Gotoxy
 
-;esi has next piece
-;eax has next rotation
-drawNextPiece PROC uses ecx edx ebx 
-	mov ecx , 25
-	mul ecx
-	add [esi] , eax
+	mov edx, OFFSET nextPieceLine
+	call WriteString
 
-    mov ecx, 4          ; 4 blocks in piece
+	mov dl, x
+	mov dh, y
+	inc dh
+	mov y, dh
+	call Gotoxy
 
-drawLoop:
-    mov al, [esi]       ; get the value next piece
-    add esi, 1
+    mov ecx, 5
+	mov edi, 0
+	outerLoop:
+		mov edx, OFFSET startPiece
+		call WriteString
+		push ecx
+		mov ecx, 5
+		innerLoop:
+			movzx ebx, BYTE PTR pieceArray[esi]
+			call getColor
+			call SetTextColor
+			cmp ebx, 0
+			je print_0
+			mov eax, ebx
+			call WriteDec
+			jmp end_condition
 
-    cmp al, 0
-    je skipBlock        ; skip empty blocks
+		print_0:
+			mov al, ' '
+			call WriteChar
 
-    mov dh, 2           ; Y offset
-    mov dl, 40          ; X offset
-    call Gotoxy
+		end_condition:
+			mov al, ' '
+			call WriteChar
+			inc esi
 
-    mov al, '1'       
-    call WriteChar
+		loop innerLoop
 
-skipBlock:
-    loop drawLoop
-    ret
+		mov eax, white + (black SHL 4)
+		call SetTextColor
+		mov edx, OFFSET endPiece
+		call WriteString
+		mov dl, x
+		mov dh, y
+		inc dh
+		mov y, dh
+		call goToxy
+		pop ecx
+
+	loop outerLoop
+	mov edx, OFFSET nextPieceLine
+	call WriteString
+	ret
 drawNextPiece ENDP
+
+drawGameOver PROC
+	mov dl, 0
+	mov dh, 0
+	call Gotoxy
+
+	mov edx, OFFSET gameOverText
+	call WriteString
+	ret
+drawGameOver ENDP
 END

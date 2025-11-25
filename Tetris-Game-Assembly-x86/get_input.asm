@@ -15,9 +15,7 @@ takeInput PROC uses edx
     ;mov edx, OFFSET Inputmsg
     ;call WriteString
     call ReadKey
-    mov dl , al
-    call WriteChar
-    call Crlf           
+    mov dl , al          
     ret
 takeInput ENDP
 

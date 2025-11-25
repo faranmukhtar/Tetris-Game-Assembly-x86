@@ -15,7 +15,10 @@ setBoardCoordinates PROC uses ebx
 
 setLoop:
 	mov ebx, [esi]
+	cmp ebx, 0
+	jl skip
 	mov boardArray[ebx], al
+skip:
 	add esi, 4
 loop setLoop
 	ret

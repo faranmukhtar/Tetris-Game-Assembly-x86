@@ -39,16 +39,24 @@ gameloop:
 	
 	call updateGame
 
-	mov eax, 150
+	mov eax, 100
 	call Delay
-	jmp gameloop
+	call checkGameOver@0
+	cmp al, 1
+	jne gameloop
 
+	call endGame
+	ret
 startGame ENDP
 
 ; updates the game after each loop
 updateGame PROC
 	mov esi, OFFSET currentPieceCoordinates
-	mov al, 1
+	mov eax, currentPiece
+	mov bx, 100
+	xor edx, edx
+	div bx
+	inc eax
 	call setBoardCoordinates@0
 
 	call drawBoard@0
@@ -56,6 +64,13 @@ updateGame PROC
 	mov esi, OFFSET currentPieceCoordinates
 	mov al, 0
 	call setBoardCoordinates@0
+
+	mov esi, nextPiece
+	mov eax, PIECE_SIZE
+	mov ebx, nextRotation
+	mul ebx
+	add esi, eax
+	call drawNextPiece@0
 
 	mov esi, OFFSET currentPieceCoordinates
 	call movePieceHorizontal@0
@@ -77,5 +92,12 @@ updateGame ENDP
 
 ; Game over loop. Takes input to restart the game
 endGame PROC
+	call Clrscr
+	gameLoop:
+		call drawGameOver@0
+		mov eax, 100
+		call Delay
+		jmp gameLoop
+	ret
 endGame ENDP
 END

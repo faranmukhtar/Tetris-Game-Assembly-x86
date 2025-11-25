@@ -9,11 +9,6 @@ PUBLIC isSafe
 PUBLIC checkCollision
 
 .data
-	LEFT BYTE 'A'
-	RIGHT BYTE 'D'
-	msg1 BYTE "SAFE ",0
-	msg2 BYTE "BLACK ",0
-	movenum SDWORD 0
 .code
 ; moves the current piece based on provided input
 
@@ -70,7 +65,7 @@ movePieceDown PROC uses ecx eax
 shiftLoop:
 	call checkCollision
 	cmp eax , 1
-	JE handleCollision
+	je handleCollision
 	mov eax, [esi]
 	add eax, 10
 	mov [esi], eax
@@ -100,19 +95,6 @@ movePieceDown ENDP
 placePiece PROC
 	LOCAL coordinateArray:DWORD, currentPiece:DWORD, nextPiece:DWORD, currentRotation:DWORD, nextRotation:DWORD
 
-	mov ebx, [ebp + 8]
-	mov eax, [ebx]
-	call WriteInt
-	mov ebx, [ebp + 12]
-	mov eax, [ebx]
-	call WriteInt
-	mov ebx, [ebp + 16]
-	mov eax, [ebx]
-	call WriteInt
-	mov ebx, [ebp + 20]
-	mov eax, [ebx]
-	call WriteInt
-
 	mov eax, [ebp + 8]
 	mov nextRotation, eax
 	mov eax, [ebp + 12]
@@ -123,11 +105,19 @@ placePiece PROC
 	mov currentPiece, eax
 	mov coordinateArray, esi
 
+	mov ebx, currentPiece
+	mov eax, [ebx]
+	mov bx, 100
+	xor edx, edx
+	div bx
+	inc eax
+	mov ebx, eax
+
 	mov ecx , TOTAL_COORDINATES
 	placeLoop:
 		mov eax , [esi]
 		mov edi , OFFSET boardArray
-		mov BYTE PTR [edi + eax] , 1
+		mov [edi + eax] , bl
 		add esi , 4
 	loop placeLoop
 
@@ -210,8 +200,6 @@ isSafe PROC uses ecx edx
 		mov eax, 1
 
 	end_func:
-		call WriteDec
-		call Crlf
 		ret
 isSafe ENDP
 
@@ -233,9 +221,8 @@ shiftLoop:
     ; Check if the position below is already occupied
     mov edi, OFFSET boardArray
     movzx eax, BYTE PTR [edi + ebx] 
-
-    cmp eax, 1
-    je Collision                 
+    cmp eax, 0
+    jne Collision                 
     
     add edx, 4                     
 loop shiftLoop

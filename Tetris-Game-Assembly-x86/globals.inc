@@ -12,7 +12,7 @@ PIECE_SIZE                  EQU PIECE_LENGTH * PIECE_LENGTH    ; 5 x 5 matrix = 
 PIECE_ROTATIONS_SIZE        EQU PIECE_SIZE * TOTAL_ROTATIONS   ; 25 * 4 matrix = 100
 
 SPAWN_X          EQU 3         ; column 3 (center)
-SPAWN_Y          EQU 0        ; top row
+SPAWN_Y          EQU -5        ; top row
 
 IFNDEF BOARD_STATE_ASM
     EXTERN boardArray:BYTE     ; Declared in board_state.asm
@@ -60,4 +60,5 @@ ENDIF
 IFNDEF SCREEN_ASM
     EXTERN drawBoard@0:PROC
     EXTERN drawNextPiece@0:PROC
+    EXTERN drawGameOver@0:PROC
 ENDIF
