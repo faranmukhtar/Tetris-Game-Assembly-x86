@@ -30,10 +30,7 @@ startGame PROC
 
 	mov edi, OFFSET currentPieceCoordinates
 
-	push SPAWN_X
-	push SPAWN_Y
 	call mapArray@0
-	add esp, 8
 
 gameloop:
 	
@@ -71,6 +68,18 @@ updateGame PROC
 	mul ebx
 	add esi, eax
 	call drawNextPiece@0
+
+	call takeInput@0
+	or al, 32
+
+	mov ebx, OFFSET currentRotation
+	push ebx
+	mov ebx, OFFSET currentPiece
+	push ebx
+	mov ebx, OFFSET currentPieceCoordinates
+	push ebx
+	call rotatePiece@0
+	add esp, 12
 
 	mov esi, OFFSET currentPieceCoordinates
 	call movePieceHorizontal@0

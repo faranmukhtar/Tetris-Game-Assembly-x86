@@ -17,9 +17,6 @@ movePieceHorizontal PROC uses eax
 	LOCAL coordinateArray:DWORD, addNum:DWORD
 	mov coordinateArray, esi
 	mov ecx, TOTAL_COORDINATES
-	call takeInput@0
-
-	or al, 32
 	
 	cmp al , 'a'
 	JE moveleft
@@ -43,7 +40,7 @@ movePieceHorizontal PROC uses eax
 	mov edx, addNum
 	call isSafe
 	cmp eax , 1
-	je endfunc
+	je success
 
 	mov ecx, TOTAL_COORDINATES
 	mov esi, coordinateArray
@@ -53,6 +50,12 @@ movePieceHorizontal PROC uses eax
 		mov [esi], ebx
 		add esi, 4
 		loop undo_loop
+		jmp endfunc
+	success:
+		mov eax, addNum
+		mov ebx, map_x
+		add ebx, eax
+		mov map_x, ebx
 	endfunc: 
 	ret
 movePieceHorizontal ENDP
@@ -71,6 +74,9 @@ shiftLoop:
 	mov [esi], eax
 	add esi, 4
 loop shiftLoop
+mov eax, map_y
+inc eax
+mov map_y, eax
 jmp endFunc
 
 handleCollision:
@@ -116,11 +122,15 @@ placePiece PROC
 	mov ecx , TOTAL_COORDINATES
 	placeLoop:
 		mov eax , [esi]
+		cmp eax, 0
+		jl skip
 		mov edi , OFFSET boardArray
 		mov [edi + eax] , bl
+	skip:
 		add esi , 4
 	loop placeLoop
 
+	; moving next piece to current piece
 	mov eax, currentRotation
 	mov edi, nextRotation
 	mov ebx, [edi]
@@ -131,7 +141,7 @@ placePiece PROC
 	mov ebx, [edi]
 	mov [eax], ebx
 
-
+	;getting new next piece and storing
 	call getRandomPiece@0
 	mov eax, nextPiece
 	mov [eax], esi
@@ -148,15 +158,63 @@ placePiece PROC
 
 	mov edi, coordinateArray
 
-	push SPAWN_X
-	push SPAWN_Y
+	mov eax, SPAWN_X
+	mov map_x, eax
+	mov eax, SPAWN_Y
+	mov map_y, eax
 	call mapArray@0
-	add esp, 8
 	ret
 placePiece ENDP
 
-; grabs the rotated piece in the pieces array
-rotatePiece PROC
+; coordinateArray in ebp + 8, currentPiece in ebp + 12, currentRotation in ebp + 16. all of them are references
+rotatePiece PROC uses eax
+	enter 0, 0
+	;for some reason every parameter is offset by +4. What
+
+	cmp al , 'w'
+	jne end_func
+
+	mov eax, [ebp + 16]
+	mov esi, [eax]
+	mov eax, esi
+	call WriteInt
+	
+	; calculating new rotation value
+	mov ecx, [ebp + 20]
+	mov eax, [ecx]
+	call WriteInt
+	inc eax
+	mov bx, TOTAL_ROTATIONS
+	xor edx, edx
+	div bx
+	mov ebx, edx
+
+	mov eax, PIECE_SIZE
+	mul ebx
+	call WriteInt
+	add esi, eax
+	mov eax, esi
+	call WriteInt
+
+	mov eax, [ebp + 12]
+	mov edi, eax
+	mov eax, edi
+	call WriteInt
+
+	call mapArray@0
+	cmp eax, 0
+	je end_func
+
+	mov ecx, [ebp + 20]
+	mov eax, [ecx]
+	inc eax
+	mov bx, TOTAL_ROTATIONS
+	xor edx, edx
+	div bx
+	mov [ecx], edx
+end_func:
+	leave
+	ret
 rotatePiece ENDP
 
 
