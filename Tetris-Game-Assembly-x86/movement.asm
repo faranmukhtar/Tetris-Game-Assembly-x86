@@ -216,8 +216,6 @@ rotatePiece PROC uses eax
 	; storing current Piece value
 	mov eax, [ebp + 16]
 	mov esi, [eax]
-	mov eax, esi
-	call WriteInt
 	
 	; calculating new rotation value
 	mov ecx, [ebp + 20]
