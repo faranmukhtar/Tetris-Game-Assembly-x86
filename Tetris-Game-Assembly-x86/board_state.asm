@@ -9,8 +9,8 @@ PUBLIC boardArray
 boardArray BYTE BOARD_SIZE dup(0)
 
 .code
-; coordinates in esi and set value in al
-setBoardCoordinates PROC uses ebx
+; coordinates in esi and set value found in al
+setBoardCoordinates PROC uses ebx ecx esi
 	mov ecx, TOTAL_COORDINATES
 
 setLoop:

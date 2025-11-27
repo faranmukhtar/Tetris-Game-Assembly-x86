@@ -12,7 +12,7 @@ PIECE_SIZE                  EQU PIECE_LENGTH * PIECE_LENGTH    ; 5 x 5 matrix = 
 PIECE_ROTATIONS_SIZE        EQU PIECE_SIZE * TOTAL_ROTATIONS   ; 25 * 4 matrix = 100
 
 SPAWN_X          EQU 3         ; column 3 (center)
-SPAWN_Y          EQU -5        ; top row
+SPAWN_Y          EQU -4        ; top row
 
 IFNDEF BOARD_STATE_ASM
     EXTERN boardArray:BYTE     ; Declared in board_state.asm
@@ -43,7 +43,8 @@ IFNDEF MOVEMENT_ASM
     EXTERN placePiece@0:PROC
     EXTERN rotatePiece@0:PROC
     EXTERN isSafe@0:PROC
-    EXTERN checkCollision@0:PROC
+    EXTERN checkVerticalCollision@0:PROC
+    EXTERN checkHorizontalCollision@0:PROC
 ENDIF
 
 IFNDEF GAME_ASM
@@ -52,11 +53,6 @@ ENDIF
 
 IFNDEF INPUT_ASM
     EXTERN takeInput@0:PROC
-ENDIF
-
-IFNDEF SCORE_ASM
-    EXTERN score:DWORD
-    EXTERN updateScore@0:PROC
 ENDIF
 
 IFNDEF SCREEN_ASM

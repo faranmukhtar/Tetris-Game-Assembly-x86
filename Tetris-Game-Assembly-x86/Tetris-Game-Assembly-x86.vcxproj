@@ -144,7 +144,6 @@
     </MASM>
     <MASM Include="movement.asm" />
     <MASM Include="piece_definitions.asm" />
-    <MASM Include="score.asm" />
     <MASM Include="screen.asm" />
   </ItemGroup>
   <ItemGroup>

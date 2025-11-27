@@ -9,14 +9,17 @@ PUBLIC map_y
 	map_x DWORD SPAWN_X
 	map_y DWORD SPAWN_Y
 .code
-; Turns array into coordinates of board array. esi contains source array and edi contains destination array
-; Takes two parameters y stored in ebp + 8 and x stored in ebp + 12
-mapArray PROC
+; Turns array into coordinates of board array taking map_x and map_y as starting points. 
+; esi contains index of piece array and edi contains the coordinate array which has to be returned
+; returns eax 1 when array is successfully mapped else 0
+mapArray PROC uses esi ebx ecx edx
 	LOCAL arr:DWORD
 	mov arr, esi
 
 	mov ecx, PIECE_LENGTH
 
+	; checks if the function is called upon rotation
+	; if it is then its safety is first checked
 	mov eax, map_x
 	cmp eax, SPAWN_X
 	jne checkSafe
@@ -41,6 +44,7 @@ checkSafe:
 		mov ebx, 10
 		mul ebx
 
+		;should be y > 20
 		cmp eax, 199
 		jg fail
 
@@ -50,6 +54,7 @@ checkSafe:
 		neg ebx
 		add ebx, map_x
 
+		; should be within the range 0 <= x <= 9
 		cmp ebx, 0
 		jl fail
 		cmp ebx, 9
@@ -57,9 +62,11 @@ checkSafe:
 
 		add eax, ebx
 
+		; is safe when y < 0
 		cmp eax, 0
 		jl end_conditional1
 
+		; checking for collision
 		movzx ebx, BYTE PTR boardArray[eax]
 		cmp ebx, 0
 		jne fail
